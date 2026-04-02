@@ -1,0 +1,126 @@
+{
+  "Potato_Early_blight": {
+    "display_name": "Potato Early Blight",
+    "cause": "Fungal infection caused by Alternaria solani",
+    "treatment": "Spray Mancozeb 2g per liter every 7 days",
+    "prevention": "Avoid overhead irrigation and remove infected leaves"
+  },
+  "Potato_Late_blight": {
+    "display_name": "Potato Late Blight",
+    "cause": "Phytophthora infestans infection",
+    "treatment": "Apply Metalaxyl-based fungicide",
+    "prevention": "Ensure proper spacing and avoid water stagnation"
+  },
+  "Potato_healthy": {
+    "display_name": "Healthy Potato Leaf",
+    "cause": "No disease detected",
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper crop management"
+  },
+
+  "Tomato_Early_blight": {
+    "display_name": "Tomato Early Blight",
+    "cause": "Alternaria solani fungal infection",
+    "treatment": "Spray Chlorothalonil or Mancozeb",
+    "prevention": "Remove infected leaves and avoid excess moisture"
+  },
+  "Tomato_Late_blight": {
+    "display_name": "Tomato Late Blight",
+    "cause": "Phytophthora infestans infection",
+    "treatment": "Apply Copper-based fungicides",
+    "prevention": "Improve air circulation and avoid wet foliage"
+  },
+  "Tomato_Leaf_Mold": {
+    "display_name": "Tomato Leaf Mold",
+    "cause": "Cladosporium fulvum fungus",
+    "treatment": "Use fungicide sprays and reduce humidity",
+    "prevention": "Ensure proper ventilation"
+  },
+  "Tomato_healthy": {
+    "display_name": "Healthy Tomato Leaf",
+    "cause": "No disease detected",
+    "treatment": "No treatment required",
+    "prevention": "Continue regular monitoring"
+  },
+
+  "Eggplant_Healthy": {
+    "display_name": "Healthy Eggplant Leaf",
+    "cause": "No disease detected",
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper nutrition and watering"
+  },
+  "Eggplant_Insect_Pest": {
+    "display_name": "Eggplant Insect Pest",
+    "cause": "Insect infestation damaging leaves",
+    "treatment": "Use neem oil or appropriate insecticide",
+    "prevention": "Regular pest inspection and organic sprays"
+  },
+  "Eggplant_Leaf_Spot": {
+    "display_name": "Eggplant Leaf Spot",
+    "cause": "Fungal or bacterial infection",
+    "treatment": "Apply fungicide like Mancozeb",
+    "prevention": "Avoid excess moisture and overcrowding"
+  },
+  "Eggplant_Mosaic": {
+    "display_name": "Eggplant Mosaic Virus",
+    "cause": "Virus transmitted by insects",
+    "treatment": "Remove infected plants",
+    "prevention": "Control insect vectors like aphids"
+  },
+  "Eggplant_White_Mold": {
+    "display_name": "Eggplant White Mold",
+    "cause": "Fungal infection (Sclerotinia)",
+    "treatment": "Apply fungicide and remove infected parts",
+    "prevention": "Ensure good air circulation"
+  },
+  "Eggplant_Wilt": {
+    "display_name": "Eggplant Wilt",
+    "cause": "Soil-borne fungal infection",
+    "treatment": "Use resistant varieties and fungicides",
+    "prevention": "Crop rotation and soil treatment"
+  },
+
+  "Grape_Black_rot": {
+    "display_name": "Grape Black Rot",
+    "cause": "Fungal infection (Guignardia bidwellii)",
+    "treatment": "Apply fungicide like Myclobutanil",
+    "prevention": "Remove infected fruits and leaves"
+  },
+  "Grape_Esca": {
+    "display_name": "Grape ESCA Disease",
+    "cause": "Complex fungal disease",
+    "treatment": "Remove infected vines",
+    "prevention": "Avoid pruning wounds and stress"
+  },
+  "Grape_Healthy": {
+    "display_name": "Healthy Grape Leaf",
+    "cause": "No disease detected",
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper vineyard care"
+  },
+  "Grape_Leaf_blight": {
+    "display_name": "Grape Leaf Blight",
+    "cause": "Fungal infection",
+    "treatment": "Apply fungicides",
+    "prevention": "Ensure good airflow"
+  },
+
+  "Orange_Citrus_canker": {
+    "display_name": "Orange Citrus Canker",
+    "cause": "Bacterial infection (Xanthomonas)",
+    "treatment": "Spray copper-based bactericides",
+    "prevention": "Use disease-free planting material"
+  },
+  "Orange_Nutrient_deficiency": {
+    "display_name": "Orange Nutrient Deficiency",
+    "cause": "Lack of essential nutrients",
+    "treatment": "Apply balanced fertilizers",
+    "prevention": "Regular soil testing and fertilization"
+  },
+  "Orange_Healthy": {
+    "display_name": "Healthy Orange Leaf",
+    "cause": "No disease detected",
+    "treatment": "No treatment required",
+    "prevention": "Maintain proper irrigation and nutrition"
+  }
+}

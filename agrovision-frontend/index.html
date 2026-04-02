@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroVision | AI Diagnostics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FEATURE 1: Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAFAFA; /* Ultra soft off-white */
+            color: #18181B; /* Zinc 900 */
+            overflow-x: hidden;
+        }
+
+        /* Smooth Scroll Reveal Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Minimalist Progress Bar */
+        .progress-bar { transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* FAQ Accordion Styling */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: slideDown 0.3s ease-in-out; }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* FEATURE 2: Crop card hover effect */
+        .crop-card {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .crop-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 40px -12px rgba(24, 24, 27, 0.12);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-zinc-200 selection:text-zinc-900">
+
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-zinc-200/50 transition-all duration-300" id="navbar">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="text-xl font-bold tracking-tight text-zinc-900">
+                AgroVision.
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <a href="#app-section" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors hidden md:block">Scanner</a>
+                <a href="#blogs" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors hidden md:block">Journal</a>
+                <a href="#faq" class="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors hidden md:block">FAQ</a>
+                
+                <select id="langSwitcher" class="bg-transparent text-sm font-medium text-zinc-900 focus:outline-none cursor-pointer">
+                    <option value="en">EN</option>
+                    <option value="mr">MR</option>
+                    <option value="hi">HI</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+        
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none">
+            <source src="assets/farm-bg.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="absolute inset-0 bg-white/60 z-10"></div> 
+        
+        <div class="relative z-20 text-center px-6 max-w-4xl mx-auto flex flex-col items-center" id="hero-content">
+            <span class="px-4 py-1.5 rounded-full border border-zinc-200 bg-white text-zinc-500 text-xs font-semibold tracking-widest uppercase mb-8 shadow-sm">
+                AI Diagnostics
+            </span>
+            <h1 class="text-6xl md:text-8xl font-bold tracking-tighter text-zinc-900 leading-[1.05] mb-6" data-i18n="hero_title">
+                Clarity for<br>your crops.
+            </h1>
+            <p class="text-lg md:text-xl text-zinc-900 font-medium max-w-2xl mb-10 leading-relaxed" data-i18n="hero_sub">
+                Upload a specimen to instantly identify pathogens and assess severity using advanced computer vision.
+            </p>
+            <button onclick="document.getElementById('app-section').scrollIntoView()" class="bg-zinc-900 text-white px-8 py-4 rounded-full font-medium tracking-wide hover:bg-zinc-800 hover:scale-105 transition-all duration-300 shadow-xl shadow-zinc-900/20">
+                Open Scanner
+            </button>
+        </div>
+    </header>
+
+    <!-- FEATURE 2: Supported Crops & Diseases Dataset Showcase Section -->
+    <section id="dataset-showcase" class="py-32 px-6 bg-[#F4F4F5] reveal">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="px-4 py-1.5 rounded-full border border-zinc-200 bg-white text-zinc-500 text-xs font-semibold tracking-widest uppercase mb-6 inline-block shadow-sm">
+                    Dataset
+                </span>
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-zinc-900 mb-4">Supported Crops &amp; Diseases</h2>
+                <p class="text-zinc-500 max-w-xl mx-auto text-sm leading-relaxed">Our model is trained to recognise conditions across a wide range of crops. Select any specimen below to begin your diagnosis.</p>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-5">
+
+                <!-- Eggplant -->
+                <div class="crop-card bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col items-center text-center cursor-default">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center text-3xl mb-4">
+                        🍆
+                    </div>
+                    <h3 class="text-zinc-900 font-semibold text-sm mb-1">Eggplant</h3>
+                    <p class="text-zinc-400 text-xs font-medium tracking-wide uppercase">7 Diseases</p>
+                </div>
+
+                <!-- Grapes -->
+                <div class="crop-card bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col items-center text-center cursor-default">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl mb-4">
+                        🍇
+                    </div>
+                    <h3 class="text-zinc-900 font-semibold text-sm mb-1">Grapes</h3>
+                    <p class="text-zinc-400 text-xs font-medium tracking-wide uppercase">4 Diseases</p>
+                </div>
+
+                <!-- Orange -->
+                <div class="crop-card bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col items-center text-center cursor-default">
+                    <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-3xl mb-4">
+                        🍊
+                    </div>
+                    <h3 class="text-zinc-900 font-semibold text-sm mb-1">Orange</h3>
+                    <p class="text-zinc-400 text-xs font-medium tracking-wide uppercase">3 Diseases</p>
+                </div>
+
+                <!-- Potato -->
+                <div class="crop-card bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col items-center text-center cursor-default">
+                    <div class="w-14 h-14 rounded-2xl bg-yellow-50 flex items-center justify-center text-3xl mb-4">
+                        🥔
+                    </div>
+                    <h3 class="text-zinc-900 font-semibold text-sm mb-1">Potato</h3>
+                    <p class="text-zinc-400 text-xs font-medium tracking-wide uppercase">3 Diseases</p>
+                </div>
+
+                <!-- Tomato -->
+                <div class="crop-card bg-white border border-zinc-200 rounded-2xl p-6 flex flex-col items-center text-center cursor-default">
+                    <div class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center text-3xl mb-4">
+                        🍅
+                    </div>
+                    <h3 class="text-zinc-900 font-semibold text-sm mb-1">Tomato</h3>
+                    <p class="text-zinc-400 text-xs font-medium tracking-wide uppercase">4 Diseases</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- END FEATURE 2 -->
+
+    <section id="app-section" class="py-32 px-6 bg-white reveal">
+        <div class="max-w-5xl mx-auto">
+            
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-zinc-900 mb-4" data-i18n="app_title">Diagnostic Interface</h2>
+                <p class="text-zinc-500">Provide a clear image of the affected plant tissue.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+                
+                <div class="flex flex-col gap-6">
+                    <div id="scanner-box" class="group relative flex flex-col items-center justify-center border border-zinc-200 rounded-3xl bg-zinc-50 overflow-hidden min-h-[400px] transition-all duration-300">
+                        
+                        <div id="upload-prompt" class="flex flex-col items-center p-8 text-center z-10 w-full transition-transform duration-500 group-hover:scale-105">
+                            <div class="w-12 h-12 mb-6 rounded-full bg-white shadow-sm flex items-center justify-center">
+                                <svg class="w-6 h-6 text-zinc-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <span class="text-zinc-900 font-medium mb-6">Provide Specimen</span>
+                            
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <button onclick="startCamera()" class="px-6 py-3 bg-zinc-900 text-white text-sm font-medium rounded-full hover:bg-zinc-800 transition-colors shadow-sm flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                                    Open Camera
+                                </button>
+                                <label for="imageInput" class="px-6 py-3 bg-white text-zinc-900 border border-zinc-200 text-sm font-medium rounded-full hover:bg-zinc-50 transition-colors shadow-sm cursor-pointer flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                    Upload File
+                                    <input type="file" id="imageInput" class="hidden" accept="image/*">
+                                </label>
+                            </div>
+                            <span class="text-zinc-400 text-xs mt-6">JPEG or PNG, up to 10MB</span>
+                        </div>
+
+                        <div id="camera-container" class="absolute inset-0 hidden flex-col items-center justify-center bg-black z-20">
+                            <video id="camera-feed" class="w-full h-full object-cover" autoplay playsinline></video>
+                            
+                            <div class="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-8 z-30">
+                                <button onclick="stopCamera()" class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors" title="Close Camera">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                                <button onclick="capturePhoto()" class="w-16 h-16 bg-white rounded-full border-[5px] border-zinc-300 shadow-xl hover:scale-95 transition-transform" title="Take Photo"></button>
+                            </div>
+                        </div>
+
+                        <div id="preview-container" class="absolute inset-0 hidden z-30 group/preview">
+                            <img id="preview" class="w-full h-full object-cover" alt="Preview"/>
+                            <div class="absolute inset-0 bg-white/40 hidden items-center justify-center backdrop-blur-md opacity-0 group-hover/preview:opacity-100 transition-opacity duration-300 group-hover/preview:flex">
+                                <button onclick="resetScanner()" class="bg-white text-zinc-900 px-6 py-2 rounded-full text-sm font-medium shadow-lg hover:bg-zinc-50">Clear & Restart</button>
+                            </div>
+                        </div>
+
+                        <canvas id="canvas" class="hidden"></canvas>
+                    </div>
+
+                    <button id="analyzeBtn" onclick="analyzeImage()" class="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-4 rounded-2xl font-medium transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="btnText" data-i18n="btn_analyze">Analyze Specimen</span>
+                        <div id="loading" class="hidden"><div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div></div>
+                    </button>
+                </div>
+
+                <div class="h-full relative min-h-[400px]">
+                    
+                    <div id="result-empty" class="absolute inset-0 border border-zinc-200 rounded-3xl bg-white flex flex-col items-center justify-center text-center p-10 z-10 transition-opacity duration-500">
+                        <p class="text-zinc-400 text-sm uppercase tracking-widest font-semibold mb-2">No Data</p>
+                        <p class="text-zinc-500 text-sm max-w-xs">Awaiting specimen upload for analysis.</p>
+                    </div>
+
+                    <div id="result-content" class="hidden flex-col h-full bg-white border border-zinc-200 rounded-3xl p-8 z-20 relative shadow-sm">
+                        
+                        <div class="mb-8 border-b border-zinc-100 pb-6">
+                            <p class="text-zinc-400 text-xs font-semibold tracking-widest uppercase mb-2">Diagnosis</p>
+                            <h2 id="disease" class="text-3xl font-bold text-zinc-900 mb-4">--</h2>
+                            <span id="severity" class="inline-flex px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">--</span>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-zinc-500 text-sm">Confidence</span>
+                                <span class="font-medium text-zinc-900"><span id="confidence">0</span>%</span>
+                            </div>
+                            <div class="w-full bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                                <div id="confidenceBar" class="bg-zinc-900 h-full progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- FEATURE 1: Confidence Chart Canvas -->
+                        <div class="mb-6">
+                            <canvas id="confidenceChart" height="120"></canvas>
+                        </div>
+                        <!-- END FEATURE 1 canvas -->
+
+                        <div class="space-y-6 overflow-y-auto pr-2 flex-grow">
+                            <div>
+                                <h4 class="text-zinc-900 font-semibold mb-2" data-i18n="result_cause">Cause</h4>
+                                <p id="cause" class="text-zinc-600 text-sm leading-relaxed">--</p>
+                            </div>
+                            <div>
+                                <h4 class="text-zinc-900 font-semibold mb-2" data-i18n="result_treatment">Treatment</h4>
+                                <p id="treatment" class="text-zinc-600 text-sm leading-relaxed">--</p>
+                            </div>
+                            <div>
+                                <h4 class="text-zinc-900 font-semibold mb-2" data-i18n="result_prevention">Prevention</h4>
+                                <p id="prevention" class="text-zinc-600 text-sm leading-relaxed">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="blogs" class="py-32 px-6 bg-[#F4F4F5] reveal">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-end mb-16">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-zinc-900 mb-4">Journal</h2>
+                    <p class="text-zinc-500">Latest insights on crop health and modern agriculture.</p>
+                </div>
+                <a href="#" class="hidden md:inline-block text-zinc-900 font-medium hover:underline underline-offset-4">View all articles</a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <a href="#" class="group cursor-pointer">
+                    <div class="w-full h-64 bg-zinc-200 rounded-2xl mb-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=2940&auto=format&fit=crop" alt="Farm" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <p class="text-zinc-500 text-sm mb-2">Pathology · Oct 12, 2026</p>
+                    <h3 class="text-xl font-bold text-zinc-900 mb-3 group-hover:text-zinc-600 transition-colors">Understanding Early Blight in Tomatoes</h3>
+                    <p class="text-zinc-600 text-sm leading-relaxed">A comprehensive guide to identifying and treating one of the most common fungal diseases affecting tomato yields.</p>
+                </a>
+                <a href="#" class="group cursor-pointer">
+                    <div class="w-full h-64 bg-zinc-200 rounded-2xl mb-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1536147116438-62679a5e01f2?q=80&w=2940&auto=format&fit=crop" alt="Leaf" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <p class="text-zinc-500 text-sm mb-2">Technology · Oct 05, 2026</p>
+                    <h3 class="text-xl font-bold text-zinc-900 mb-3 group-hover:text-zinc-600 transition-colors">How Computer Vision is Changing Farming</h3>
+                    <p class="text-zinc-600 text-sm leading-relaxed">Explore the mechanics behind AI diagnostic tools and how they are reducing crop loss globally.</p>
+                </a>
+                <a href="#" class="group cursor-pointer">
+                    <div class="w-full h-64 bg-zinc-200 rounded-2xl mb-6 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2940&auto=format&fit=crop" alt="Soil" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    </div>
+                    <p class="text-zinc-500 text-sm mb-2">Prevention · Sep 28, 2026</p>
+                    <h3 class="text-xl font-bold text-zinc-900 mb-3 group-hover:text-zinc-600 transition-colors">Soil Nutrition & Natural Immunity</h3>
+                    <p class="text-zinc-600 text-sm leading-relaxed">Why treating the soil is just as important as treating the leaf when it comes to disease prevention.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-32 px-6 bg-white reveal">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-zinc-900 mb-12 text-center">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <details class="group border border-zinc-200 rounded-2xl bg-zinc-50 [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer font-medium text-zinc-900">
+                        How accurate is the AI diagnostic tool?
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <div class="text-zinc-600 px-6 pb-6 text-sm leading-relaxed">
+                        Our model is trained on over 100,000 verified pathological images and currently operates at a 98.5% confidence rate for the 50 most common crop diseases. However, it should be used to assist, not replace, professional agronomist advice.
+                    </div>
+                </details>
+
+                <details class="group border border-zinc-200 rounded-2xl bg-zinc-50 [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer font-medium text-zinc-900">
+                        What file types are supported?
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <div class="text-zinc-600 px-6 pb-6 text-sm leading-relaxed">
+                        We currently support standard image formats including JPEG, PNG, and HEIC up to 10MB in size. For best results, ensure the leaf is well-lit and in sharp focus.
+                    </div>
+                </details>
+
+                <details class="group border border-zinc-200 rounded-2xl bg-zinc-50 [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-6 cursor-pointer font-medium text-zinc-900">
+                        Is my data saved?
+                        <span class="transition group-open:rotate-180">
+                            <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                        </span>
+                    </summary>
+                    <div class="text-zinc-600 px-6 pb-6 text-sm leading-relaxed">
+                        Images processed through the free scanner are not permanently stored unless you create a registered account. Diagnostic metadata is anonymized and used exclusively to improve the AI model.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 text-center text-zinc-500 text-sm bg-white border-t border-zinc-100">
+        <p>&copy; 2026 AgroVision. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // --- 1. Parallax & Scroll Animations ---
+        window.addEventListener('scroll', () => {
+            const scroll = window.scrollY;
+            const heroContent = document.getElementById('hero-content');
+            if (heroContent) {
+                heroContent.style.transform = `translateY(${scroll * 0.4}px)`;
+                heroContent.style.opacity = 1 - (scroll / 600);
+            }
+        });
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, { threshold: 0.15 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // --- 2. Multi-Language Logic ---
+        const translations = {
+            en: { hero_title: "Clarity for<br>your crops.", hero_sub: "Upload a specimen to instantly identify pathogens and assess severity using advanced computer vision.", app_title: "Diagnostic Interface", btn_analyze: "Analyze Specimen", result_cause: "Cause", result_treatment: "Treatment", result_prevention: "Prevention" },
+            mr: { hero_title: "तुमच्या पिकांसाठी<br>स्पष्टता.", hero_sub: "अद्ययावत कॉम्प्युटर व्हिजन वापरून रोगजनकांना त्वरित ओळखण्यासाठी आणि तीव्रतेचे मूल्यांकन करण्यासाठी नमुना अपलोड करा.", app_title: "निदान इंटरफेस", btn_analyze: "नमुना विश्लेषण करा", result_cause: "कारण", result_treatment: "उपचार", result_prevention: "प्रतिबंध" },
+            hi: { hero_title: "आपकी फसलों के लिए<br>स्पष्टता.", hero_sub: "उन्नत कंप्यूटर विज़न का उपयोग करके रोगजनकों की तुरंत पहचान करने और गंभीरता का आकलन करने के लिए एक नमूना अपलोड करें।", app_title: "नैदानिक इंटरफ़ेस", btn_analyze: "नमूने का विश्लेषण करें", result_cause: "कारण", result_treatment: "उपचार", result_prevention: "रोकथाम" }
+        };
+
+        document.getElementById("langSwitcher").addEventListener("change", (e) => {
+            const lang = e.target.value;
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+        });
+
+        // --- 3. App Logic with Camera Integration ---
+        let currentStream = null;
+        let activeFileToAnalyze = null; 
+
+        const imageInput = document.getElementById("imageInput");
+        const preview = document.getElementById("preview");
+        const uploadPrompt = document.getElementById("upload-prompt");
+        const previewContainer = document.getElementById("preview-container");
+        
+        const cameraContainer = document.getElementById("camera-container");
+        const cameraFeed = document.getElementById("camera-feed");
+        const canvas = document.getElementById("canvas");
+        
+        const analyzeBtn = document.getElementById("analyzeBtn");
+        const btnText = document.getElementById("btnText");
+        const loading = document.getElementById("loading");
+        
+        const resultEmpty = document.getElementById("result-empty");
+        const resultContent = document.getElementById("result-content");
+        const confidenceBar = document.getElementById("confidenceBar");
+
+        // Camera Controls
+        async function startCamera() {
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } 
+                });
+                cameraFeed.srcObject = currentStream;
+                uploadPrompt.classList.add("hidden");
+                cameraContainer.classList.remove("hidden");
+                cameraContainer.classList.add("flex");
+            } catch (err) {
+                alert("Camera access denied or unavailable. Please ensure permissions are granted.");
+                console.error(err);
+            }
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            cameraContainer.classList.add("hidden");
+            cameraContainer.classList.remove("flex");
+            uploadPrompt.classList.remove("hidden");
+        }
+
+        function capturePhoto() {
+            if (!currentStream) return;
+            
+            canvas.width = cameraFeed.videoWidth;
+            canvas.height = cameraFeed.videoHeight;
+            canvas.getContext('2d').drawImage(cameraFeed, 0, 0);
+            
+            canvas.toBlob((blob) => {
+                activeFileToAnalyze = new File([blob], "capture.jpg", { type: "image/jpeg" });
+                
+                preview.src = URL.createObjectURL(activeFileToAnalyze);
+                
+                stopCamera();
+                uploadPrompt.classList.add("hidden");
+                previewContainer.classList.remove("hidden");
+                resetResultsUI();
+            }, 'image/jpeg', 0.9);
+        }
+
+        // File Upload Fallback
+        imageInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                activeFileToAnalyze = file;
+                preview.src = URL.createObjectURL(file);
+                
+                uploadPrompt.classList.add("hidden");
+                previewContainer.classList.remove("hidden");
+                resetResultsUI();
+            }
+        });
+
+        function resetScanner() {
+            activeFileToAnalyze = null;
+            preview.src = "";
+            imageInput.value = "";
+            previewContainer.classList.add("hidden");
+            uploadPrompt.classList.remove("hidden");
+            resetResultsUI();
+        }
+
+        function resetResultsUI() {
+            confidenceBar.style.width = "0%";
+            document.getElementById("confidence").innerText = "0";
+            resultEmpty.style.opacity = "1";
+            resultEmpty.classList.remove("hidden");
+            resultContent.classList.add("hidden");
+            resultContent.classList.remove("flex");
+        }
+
+        // Analysis API Call
+        async function analyzeImage() {
+            if (!activeFileToAnalyze) return alert("Please capture or upload an image first.");
+
+            const formData = new FormData();
+            formData.append("file", activeFileToAnalyze); 
+            formData.append("lang", document.getElementById("langSwitcher").value); 
+
+            analyzeBtn.disabled = true;
+            const originalBtnText = btnText.innerText;
+            btnText.innerText = "Processing...";
+            loading.classList.remove("hidden");
+            
+            resultEmpty.style.opacity = "0.5";
+
+            try {
+                const response = await fetch("http://localhost:8080/api/analyze", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error("Server error");
+                const data = await response.json();
+
+                document.getElementById("disease").innerText = data.prediction.disease.replace(/_/g, ' ');
+                
+                const confValue = (data.prediction.confidence * 100).toFixed(1);
+                document.getElementById("confidence").innerText = confValue;
+                setTimeout(() => { confidenceBar.style.width = `${confValue}%`; }, 100); 
+
+                // FEATURE 1: Render confidence bar chart
+                if (window.chart) window.chart.destroy();
+                const ctx = document.getElementById("confidenceChart").getContext("2d");
+                window.chart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: ["Confidence"],
+                        datasets: [
+                            {
+                                label: "Confidence %",
+                                data: [parseFloat(confValue)],
+                                backgroundColor: "rgba(24, 24, 27, 0.85)",
+                                borderRadius: 8,
+                                borderSkipped: false,
+                                barThickness: 40
+                            },
+                            {
+                                label: "Remaining",
+                                data: [100 - parseFloat(confValue)],
+                                backgroundColor: "rgba(244, 244, 245, 1)",
+                                borderRadius: 8,
+                                borderSkipped: false,
+                                barThickness: 40
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        indexAxis: "y",
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: (ctx) => ctx.datasetIndex === 0 ? ` ${confValue}% confidence` : ""
+                                },
+                                filter: (item) => item.datasetIndex === 0
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                min: 0,
+                                max: 100,
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: {
+                                    callback: (v) => v + "%",
+                                    color: "#a1a1aa",
+                                    font: { size: 11 }
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: { display: false }
+                            }
+                        }
+                    }
+                });
+                // END FEATURE 1 chart logic
+
+                const severityElement = document.getElementById("severity");
+                const severity = data.prediction.severity;
+                severityElement.innerText = severity;
+
+                severityElement.className = "inline-flex px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ";
+                if (severity === "Severe") severityElement.classList.add("bg-red-50", "text-red-700", "border", "border-red-200");
+                else if (severity === "Moderate") severityElement.classList.add("bg-orange-50", "text-orange-700", "border", "border-orange-200");
+                else severityElement.classList.add("bg-zinc-100", "text-zinc-700", "border", "border-zinc-200");
+
+                document.getElementById("cause").innerText = data.details.cause;
+                document.getElementById("treatment").innerText = data.details.treatment;
+                document.getElementById("prevention").innerText = data.details.prevention;
+
+                setTimeout(() => {
+                    resultEmpty.classList.add("hidden");
+                    resultEmpty.style.opacity = "1";
+                    resultContent.classList.remove("hidden");
+                    resultContent.classList.add("flex");
+                }, 300);
+
+            } catch (error) {
+                alert("Error connecting to backend servers.");
+                resultEmpty.style.opacity = "1";
+            } finally {
+                analyzeBtn.disabled = false;
+                btnText.innerText = originalBtnText;
+                loading.classList.add("hidden");
+            }
+        }
+    </script>
+</body>
+</html>
