@@ -9,14 +9,23 @@ import os
 
 app = FastAPI()
 
-# 🔥 Load trained model
+# ==========================
+# LOAD MODEL
+# ==========================
 model = tf.keras.models.load_model("agrovision_model.h5")
 
-# 🔥 Load disease information
+print("✅ Model Loaded")
+print("📊 Output Shape:", model.output_shape)
+
+# ==========================
+# LOAD DISEASE INFO
+# ==========================
 with open("disease_info.json", "r") as f:
     disease_info = json.load(f)
 
-# 🔥 AUTO LOAD CLASS NAMES (IMPORTANT)
+# ==========================
+# LOAD CLASSES FROM DATASET
+# ==========================
 DATASET_PATH = "dataset"
 
 class_names = sorted([
@@ -25,10 +34,14 @@ class_names = sorted([
 ])
 
 print("🔥 Classes Loaded:", class_names)
+print("📦 Total Classes:", len(class_names))
 
 IMG_SIZE = 224
 
-def get_severity(confidence: float) -> str:
+# ==========================
+# SEVERITY LOGIC
+# ==========================
+def get_severity(confidence):
     if confidence < 0.60:
         return "Mild"
     elif confidence < 0.85:
@@ -36,27 +49,47 @@ def get_severity(confidence: float) -> str:
     else:
         return "Severe"
 
+# ==========================
+# PREDICTION API
+# ==========================
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     try:
         contents = await file.read()
 
-        # ✅ Image processing
+        # Image Processing
         image = Image.open(io.BytesIO(contents)).convert("RGB")
         image = image.resize((IMG_SIZE, IMG_SIZE))
 
         image_array = np.array(image) / 255.0
         image_array = np.expand_dims(image_array, axis=0)
 
-        # 🔥 Prediction
-        prediction = model.predict(image_array)
+        # Prediction
+        prediction = model.predict(image_array, verbose=0)
+
         predicted_index = int(np.argmax(prediction))
-        predicted_class = class_names[predicted_index]
         confidence = float(np.max(prediction))
+
+        # Safety Check
+        if predicted_index >= len(class_names):
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "status": "error",
+                    "message": "Model classes do not match dataset classes."
+                }
+            )
+
+        predicted_class = class_names[predicted_index]
+
+        print("\n======================")
+        print("Predicted Index :", predicted_index)
+        print("Predicted Class :", predicted_class)
+        print("Confidence      :", round(confidence * 100, 2), "%")
+        print("======================\n")
 
         severity = get_severity(confidence)
 
-        # 🔥 Get disease info
         info = disease_info.get(predicted_class, {})
 
         return JSONResponse({
@@ -74,6 +107,8 @@ async def predict(file: UploadFile = File(...)):
         })
 
     except Exception as e:
+        print("❌ Error:", str(e))
+
         return JSONResponse(
             status_code=500,
             content={

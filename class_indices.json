@@ -1,0 +1,23 @@
+{
+    "Eggplant_Healthy": 0,
+    "Eggplant_Insect_Pest": 1,
+    "Eggplant_Leaf_Spot": 2,
+    "Eggplant_Mosaic": 3,
+    "Eggplant_Small_Leaf": 4,
+    "Eggplant_White_Mold": 5,
+    "Eggplant_Wilt": 6,
+    "Grape_Black_Rot": 7,
+    "Grape_Esca": 8,
+    "Grape_Healthy": 9,
+    "Grape_Leaf_blight": 10,
+    "Orange_Citrus_canker": 11,
+    "Orange_Healthy": 12,
+    "Orange_Nutrient_deficiency": 13,
+    "Potato_Early_blight": 14,
+    "Potato_Late_blight": 15,
+    "Potato_healthy": 16,
+    "Tomato_Early_blight": 17,
+    "Tomato_Late_blight": 18,
+    "Tomato_Leaf_Mold": 19,
+    "Tomato_healthy": 20
+}

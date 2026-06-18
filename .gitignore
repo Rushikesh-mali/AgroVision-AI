@@ -6,4 +6,14 @@ node_modules/
 .env
 dataset/
 
+# Virtual Environment
+agrovision_env/
 
+# Dataset
+dataset/
+
+# VS Code
+.vscode/
+
+# Training artifacts
+*.log
